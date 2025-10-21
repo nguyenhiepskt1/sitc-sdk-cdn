@@ -14,7 +14,6 @@
 class SITCSDK {
   constructor() {
     this.version = '1.0.0-mock'
-    this.isReady = true
     this._isReady = true
     this.parent = window.parent
     this.requestId = 0
