@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITCSDK Demo - JSDelivr Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: #718096;
+            margin-bottom: 20px;
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+            border: 2px solid #68d391;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #68d391, #48bb78);
+        }
+        
+        .status-card.ready {
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+            border-color: #68d391;
+        }
+        
+        .status-card.loading {
+            background: linear-gradient(135deg, #fef5e7 0%, #fefcbf 100%);
+            border-color: #f6ad55;
+        }
+        
+        .status-card.error {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            border-color: #fc8181;
+        }
+        
+        .status-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .status-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-card {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .demo-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+        }
+        
+        .demo-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .demo-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .demo-title .icon {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-description {
+            color: #718096;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            position: relative;
+        }
+        
+        .result::before {
+            content: 'Result';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: #a0aec0;
+            font-weight: 600;
+        }
+        
+        .result.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .tracking-status {
+            padding: 15px;
+            background: linear-gradient(135deg, #fef5e7 0%, #fefcbf 100%);
+            border: 2px solid #f6ad55;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: none;
+            position: relative;
+        }
+        
+        .tracking-status.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .info-section {
+            background: linear-gradient(135deg, #e6f3ff 0%, #f0f8ff 100%);
+            border: 2px solid #90cdf4;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            position: relative;
+        }
+        
+        .info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .info-section h3 {
+            color: #2b6cb0;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: 'Code Example';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: #a0aec0;
+            font-weight: 600;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+        
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-left: 4px solid #667eea;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+            position: relative;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left-color: #48bb78;
+        }
+        
+        .toast.error {
+            border-left-color: #f56565;
+        }
+        
+        .toast.warning {
+            border-left-color: #ed8936;
+        }
+        
+        .toast.info {
+            border-left-color: #4299e1;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+            color: #718096;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 SITCSDK Demo</h1>
+            <p class="subtitle">Interactive demonstration of SITCSDK functionality with JSDelivr CDN</p>
+        </div>
+        
+        <div id="status" class="status-card loading">
+            <span class="status-icon">⏳</span>
+            <span class="status-text" id="status-text">Loading SITCSDK from JSDelivr...</span>
+        </div>
+        
+        <div class="demo-grid">
+            <!-- GPS Demo -->
+            <div class="demo-card">
+                <div class="demo-title">
+                    <span class="icon">📍</span>
+                    GPS Service
+                </div>
+                <p class="demo-description">Test GPS location functionality with realistic mock data from Hanoi, Vietnam</p>
+                <button class="btn" onclick="testGPS()">Get Location</button>
+                <button class="btn" onclick="startTracking()">Start Tracking</button>
+                <button class="btn" onclick="stopTracking()">Stop Tracking</button>
+                <div id="gps-result" class="result"></div>
+                <div id="tracking-status" class="tracking-status">
+                    <strong>🔄 Tracking Status:</strong> <span id="tracking-text">Inactive</span>
+                </div>
+            </div>
+            
+            <!-- Camera Demo -->
+            <div class="demo-card">
+                <div class="demo-title">
+                    <span class="icon">📷</span>
+                    Camera Service
+                </div>
+                <p class="demo-description">Test camera functionality with mock photo data and EXIF information</p>
+                <button class="btn" onclick="testCamera()">Take Photo</button>
+                <button class="btn" onclick="selectFromGallery()">Select from Gallery</button>
+                <div id="camera-result" class="result"></div>
+            </div>
+            
+            <!-- Notifications Demo -->
+            <div class="demo-card">
+                <div class="demo-title">
+                    <span class="icon">🔔</span>
+                    Notifications
+                </div>
+                <p class="demo-description">Test notification functionality with scheduling and custom options</p>
+                <button class="btn" onclick="testNotification()">Send Notification</button>
+                <button class="btn" onclick="scheduleNotification()">Schedule Notification</button>
+                <div id="notification-result" class="result"></div>
+            </div>
+            
+            <!-- Toast Demo -->
+            <div class="demo-card">
+                <div class="demo-title">
+                    <span class="icon">🍞</span>
+                    Toast Messages
+                </div>
+                <p class="demo-description">Test toast notification system with different message types</p>
+                <button class="btn btn-success" onclick="showSuccessToast()">Success</button>
+                <button class="btn btn-warning" onclick="showWarningToast()">Warning</button>
+                <button class="btn btn-danger" onclick="showErrorToast()">Error</button>
+                <button class="btn btn-info" onclick="showInfoToast()">Info</button>
+            </div>
+            
+            <!-- User Info Demo -->
+            <div class="demo-card">
+                <div class="demo-title">
+                    <span class="icon">👤</span>
+                    User Information
+                </div>
+                <p class="demo-description">Test user data retrieval with permissions and role information</p>
+                <button class="btn" onclick="getUserInfo()">Get User Info</button>
+                <div id="user-result" class="result"></div>
+            </div>
+            
+            <!-- All Tests Demo -->
+            <div class="demo-card">
+                <div class="demo-title">
+                    <span class="icon">🔄</span>
+                    All Tests
+                </div>
+                <p class="demo-description">Run comprehensive test suite to verify all SITCSDK functionality</p>
+                <button class="btn" onclick="runAllTests()">Run All Tests</button>
+                <div id="all-tests-result" class="result"></div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>📚 Integration Guide</h3>
+            <p>To use SITCSDK in your project, simply include the script from JSDelivr:</p>
+            
+            <div class="code-block">
+&lt;!-- Include SITCSDK Mock from JSDelivr --&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/nguyenhiepskt1/sitc-sdk-cdn@main/sitc-sdk-mock.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+// Use SITCSDK APIs
+const location = await window.sitcSDK.getLocation()
+const photo = await window.sitcSDK.takePhoto()
+await window.sitcSDK.sendNotification('Hello from my app!')
+window.sitcSDK.showSuccess('Operation completed!')
+
+// Get user information
+const userInfo = await window.sitcSDK.getUserInfo()
+console.log('User:', userInfo.user)
+console.log('Permissions:', userInfo.permissions)
+&lt;/script&gt;
+            </div>
+            
+            <p><strong>Features:</strong></p>
+            <ul style="margin: 15px 0; padding-left: 20px; color: #4a5568;">
+                <li>✅ <strong>GPS Location:</strong> Get current location with realistic mock data</li>
+                <li>✅ <strong>Camera:</strong> Take photos or select from gallery</li>
+                <li>✅ <strong>Notifications:</strong> Send local notifications with scheduling</li>
+                <li>✅ <strong>Toast Messages:</strong> Beautiful toast notifications</li>
+                <li>✅ <strong>User Info:</strong> Get user data and permissions</li>
+                <li>✅ <strong>Realistic Delays:</strong> Simulates real API response times</li>
+            </ul>
+            
+            <p><strong>Note:</strong> This is a mock version for demonstration. Replace with real SITCSDK when ready for production.</p>
+        </div>
+        
+        <div class="footer">
+            <p>Powered by <a href="https://cdn.jsdelivr.net/" target="_blank">JSDelivr CDN</a> | 
+            <a href="https://github.com/nguyenhiepskt1/sitc-sdk-cdn" target="_blank">GitHub Repository</a> | 
+            <a href="https://sitc.com" target="_blank">SITC-DINHVU</a></p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Include SITCSDK Mock from JSDelivr -->
+    <script src="https://cdn.jsdelivr.net/gh/nguyenhiepskt1/sitc-sdk-cdn@e8fd2a2/sitc-sdk-mock.js"></script>
+    
+    <script>
+        let trackingInterval = null
+        
+        // Check SITCSDK status on load
+        window.addEventListener('load', () => {
+            checkStatusWithRetry()
+        })
+        
+        function checkStatusWithRetry(retries = 10) {
+            const statusEl = document.getElementById('status')
+            const statusText = document.getElementById('status-text')
+            
+            if (window.sitcSDK && typeof window.sitcSDK.isReady === 'function' && window.sitcSDK.isReady()) {
+                statusEl.className = 'status-card ready'
+                statusText.innerHTML = '<span class="status-icon">✅</span>SITCSDK Mock Ready!'
+            } else if (retries > 0) {
+                statusEl.className = 'status-card loading'
+                statusText.innerHTML = '<span class="status-icon">⏳</span>Loading SITCSDK... (' + (10 - retries + 1) + '/10)'
+                setTimeout(() => checkStatusWithRetry(retries - 1), 500)
+            } else {
+                statusEl.className = 'status-card error'
+                statusText.innerHTML = '<span class="status-icon">❌</span>SITCSDK Mock Not Ready - Check console for errors'
+                console.error('SITCSDK failed to load after 10 attempts')
+            }
+        }
+        
+        function checkStatus() {
+            const statusEl = document.getElementById('status')
+            const statusText = document.getElementById('status-text')
+            
+            if (window.sitcSDK && typeof window.sitcSDK.isReady === 'function' && window.sitcSDK.isReady()) {
+                statusEl.className = 'status-card ready'
+                statusText.innerHTML = '<span class="status-icon">✅</span>SITCSDK Mock Ready!'
+                return true
+            } else {
+                statusEl.className = 'status-card error'
+                statusText.innerHTML = '<span class="status-icon">❌</span>SITCSDK Mock Not Ready'
+                return false
+            }
+        }
+        
+        function checkSDKReady() {
+            if (!window.sitcSDK) {
+                showToast('SITCSDK not loaded. Please wait and try again.', 'error')
+                return false
+            }
+            
+            if (typeof window.sitcSDK.isReady !== 'function') {
+                showToast('SITCSDK isReady method not available.', 'error')
+                return false
+            }
+            
+            if (!window.sitcSDK.isReady()) {
+                showToast('SITCSDK not ready. Please wait and try again.', 'warning')
+                return false
+            }
+            
+            return true
+        }
+        
+        function showResult(elementId, data) {
+            const el = document.getElementById(elementId)
+            el.textContent = JSON.stringify(data, null, 2)
+            el.classList.add('show')
+        }
+        
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container')
+            const toast = document.createElement('div')
+            toast.className = `toast ${type}`
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <span style="margin-right: 10px; font-size: 1.2rem;">
+                        ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
+                    </span>
+                    <span>${message}</span>
+                </div>
+            `
+            
+            container.appendChild(toast)
+            
+            // Show toast
+            setTimeout(() => toast.classList.add('show'), 100)
+            
+            // Remove toast
+            setTimeout(() => {
+                toast.classList.remove('show')
+                setTimeout(() => container.removeChild(toast), 300)
+            }, 3000)
+        }
+        
+        async function testGPS() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('gps-result', { status: 'loading', message: 'Getting location...' })
+                const location = await window.sitcSDK.getLocation()
+                showResult('gps-result', { status: 'success', data: location })
+                showToast('Location retrieved successfully!', 'success')
+            } catch (error) {
+                showResult('gps-result', { status: 'error', message: error.message })
+                showToast('Failed to get location', 'error')
+            }
+        }
+        
+        async function startTracking() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('gps-result', { status: 'loading', message: 'Starting GPS tracking...' })
+                
+                const trackingInfo = await window.sitcSDK.startLocationTracking((location) => {
+                    console.log('Location update:', location)
+                    showResult('gps-result', { status: 'tracking', data: location })
+                })
+                
+                document.getElementById('tracking-status').classList.add('active')
+                document.getElementById('tracking-text').textContent = 'Active'
+                
+                showResult('gps-result', { status: 'success', data: trackingInfo })
+                showToast('GPS tracking started!', 'success')
+            } catch (error) {
+                showResult('gps-result', { status: 'error', message: error.message })
+                showToast('Failed to start tracking', 'error')
+            }
+        }
+        
+        async function stopTracking() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('gps-result', { status: 'loading', message: 'Stopping GPS tracking...' })
+                
+                const result = await window.sitcSDK.stopLocationTracking()
+                
+                document.getElementById('tracking-status').classList.remove('active')
+                document.getElementById('tracking-text').textContent = 'Inactive'
+                
+                showResult('gps-result', { status: 'success', data: result })
+                showToast('GPS tracking stopped!', 'info')
+            } catch (error) {
+                showResult('gps-result', { status: 'error', message: error.message })
+                showToast('Failed to stop tracking', 'error')
+            }
+        }
+        
+        async function testCamera() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('camera-result', { status: 'loading', message: 'Taking photo...' })
+                const photo = await window.sitcSDK.takePhoto()
+                showResult('camera-result', { status: 'success', data: photo })
+                showToast('Photo captured successfully!', 'success')
+            } catch (error) {
+                showResult('camera-result', { status: 'error', message: error.message })
+                showToast('Failed to take photo', 'error')
+            }
+        }
+        
+        async function selectFromGallery() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('camera-result', { status: 'loading', message: 'Selecting from gallery...' })
+                const photo = await window.sitcSDK.takePhoto({ source: 'gallery' })
+                showResult('camera-result', { status: 'success', data: photo })
+                showToast('Photo selected from gallery!', 'success')
+            } catch (error) {
+                showResult('camera-result', { status: 'error', message: error.message })
+                showToast('Failed to select photo', 'error')
+            }
+        }
+        
+        async function testNotification() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('notification-result', { status: 'loading', message: 'Sending notification...' })
+                const result = await window.sitcSDK.sendNotification('Hello from SITCSDK Demo!')
+                showResult('notification-result', { status: 'success', data: result })
+                showToast('Notification sent successfully!', 'success')
+            } catch (error) {
+                showResult('notification-result', { status: 'error', message: error.message })
+                showToast('Failed to send notification', 'error')
+            }
+        }
+        
+        async function scheduleNotification() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('notification-result', { status: 'loading', message: 'Scheduling notification...' })
+                const result = await window.sitcSDK.sendNotification('Scheduled notification!', {
+                    title: 'Scheduled Alert',
+                    schedule: { at: new Date(Date.now() + 5000) }
+                })
+                showResult('notification-result', { status: 'success', data: result })
+                showToast('Notification scheduled for 5 seconds!', 'info')
+            } catch (error) {
+                showResult('notification-result', { status: 'error', message: error.message })
+                showToast('Failed to schedule notification', 'error')
+            }
+        }
+        
+        function showSuccessToast() {
+            if (!checkSDKReady()) return
+            window.sitcSDK.showSuccess('Success from SITCSDK Demo!')
+        }
+        
+        function showWarningToast() {
+            if (!checkSDKReady()) return
+            window.sitcSDK.showWarning('Warning from SITCSDK Demo!')
+        }
+        
+        function showErrorToast() {
+            if (!checkSDKReady()) return
+            window.sitcSDK.showError('Error from SITCSDK Demo!')
+        }
+        
+        function showInfoToast() {
+            if (!checkSDKReady()) return
+            window.sitcSDK.showInfo('Info from SITCSDK Demo!')
+        }
+        
+        async function getUserInfo() {
+            if (!checkSDKReady()) return
+            
+            try {
+                showResult('user-result', { status: 'loading', message: 'Getting user info...' })
+                const userInfo = await window.sitcSDK.getUserInfo()
+                showResult('user-result', { status: 'success', data: userInfo })
+                showToast('User info retrieved successfully!', 'success')
+            } catch (error) {
+                showResult('user-result', { status: 'error', message: error.message })
+                showToast('Failed to get user info', 'error')
+            }
+        }
+        
+        async function runAllTests() {
+            if (!checkSDKReady()) return
+            
+            const results = []
+            showResult('all-tests-result', { status: 'loading', message: 'Running all tests...' })
+            
+            try {
+                // Test GPS
+                try {
+                    const location = await window.sitcSDK.getLocation()
+                    results.push({ test: 'GPS', status: 'success', data: location })
+                } catch (error) {
+                    results.push({ test: 'GPS', status: 'error', message: error.message })
+                }
+                
+                // Test Camera
+                try {
+                    const photo = await window.sitcSDK.takePhoto()
+                    results.push({ test: 'Camera', status: 'success', data: photo })
+                } catch (error) {
+                    results.push({ test: 'Camera', status: 'error', message: error.message })
+                }
+                
+                // Test User Info
+                try {
+                    const userInfo = await window.sitcSDK.getUserInfo()
+                    results.push({ test: 'User Info', status: 'success', data: userInfo })
+                } catch (error) {
+                    results.push({ test: 'User Info', status: 'error', message: error.message })
+                }
+                
+                // Test Notification
+                try {
+                    const notification = await window.sitcSDK.sendNotification('All tests notification from SITCSDK Demo')
+                    results.push({ test: 'Notification', status: 'success', data: notification })
+                } catch (error) {
+                    results.push({ test: 'Notification', status: 'error', message: error.message })
+                }
+                
+                // Test Toast
+                try {
+                    window.sitcSDK.showSuccess('All tests completed!')
+                    results.push({ test: 'Toast', status: 'success', message: 'Toast displayed' })
+                } catch (error) {
+                    results.push({ test: 'Toast', status: 'error', message: error.message })
+                }
+                
+                showResult('all-tests-result', { status: 'completed', results })
+                showToast('All tests completed successfully!', 'success')
+                
+            } catch (error) {
+                showResult('all-tests-result', { status: 'error', message: error.message })
+                showToast('Tests failed', 'error')
+            }
+        }
+    </script>
+</body>
+</html>
