@@ -85,20 +85,35 @@ class SITCSDK {
   async getLocation(options = {}) {
     console.log('SITCSDK Mock: getLocation called with options:', options)
     
-    // Simulate network delay
-    await this._delay(500 + Math.random() * 1000)
-    
-    // Add some randomness to location
-    const location = {
-      ...this.mockLocation,
-      latitude: this.mockLocation.latitude + (Math.random() - 0.5) * 0.001,
-      longitude: this.mockLocation.longitude + (Math.random() - 0.5) * 0.001,
-      accuracy: 5 + Math.random() * 10,
-      timestamp: new Date().toISOString()
+    try {
+      // Simulate network delay
+      const delay = options.timeout || (500 + Math.random() * 1000)
+      await this._delay(delay)
+      
+      // Simulate error cases
+      if (Math.random() < 0.1) { // 10% chance of error
+        throw new Error('Mock GPS Error: Location request timed out')
+      }
+      
+      // Add some randomness to location based on accuracy
+      const accuracy = options.enableHighAccuracy ? (2 + Math.random() * 3) : (5 + Math.random() * 10)
+      const location = {
+        ...this.mockLocation,
+        latitude: this.mockLocation.latitude + (Math.random() - 0.5) * 0.001,
+        longitude: this.mockLocation.longitude + (Math.random() - 0.5) * 0.001,
+        accuracy: accuracy,
+        altitude: this.mockLocation.altitude + (Math.random() - 0.5) * 2,
+        speed: Math.random() * 5,
+        heading: Math.random() * 360,
+        timestamp: new Date().toISOString()
+      }
+      
+      console.log('SITCSDK Mock: Location retrieved:', location)
+      return location
+    } catch (error) {
+      console.error('SITCSDK Mock: getLocation error:', error.message)
+      throw error
     }
-    
-    console.log('SITCSDK Mock: Location retrieved:', location)
-    return location
   }
   
   /**
@@ -161,18 +176,47 @@ class SITCSDK {
   async takePhoto(options = {}) {
     console.log('SITCSDK Mock: takePhoto called with options:', options)
     
-    // Simulate camera delay
-    await this._delay(1000 + Math.random() * 2000)
-    
-    const photo = {
-      ...this.mockPhoto,
-      timestamp: new Date().toISOString(),
-      source: options.source || 'camera',
-      quality: options.quality || 90
+    try {
+      // Simulate camera delay
+      const delay = 1000 + Math.random() * 2000
+      await this._delay(delay)
+      
+      // Simulate error cases
+      if (Math.random() < 0.05) { // 5% chance of error
+        throw new Error('Mock Camera Error: Camera access denied')
+      }
+      
+      // Generate different photo based on source
+      const source = options.source || 'camera'
+      const quality = options.quality || 90
+      const resultType = options.resultType || 'DataUrl'
+      
+      const photo = {
+        ...this.mockPhoto,
+        timestamp: new Date().toISOString(),
+        source: source,
+        quality: quality,
+        resultType: resultType,
+        width: options.width || 1920,
+        height: options.height || 1080,
+        size: Math.floor(245760 * (quality / 100))
+      }
+      
+      // Simulate different data based on resultType
+      if (resultType === 'Uri') {
+        photo.uri = `file:///storage/emulated/0/DCIM/SITC/${Date.now()}.jpg`
+        delete photo.dataUrl
+      } else if (resultType === 'Base64') {
+        photo.base64String = photo.dataUrl.split(',')[1]
+        delete photo.dataUrl
+      }
+      
+      console.log('SITCSDK Mock: Photo captured:', photo)
+      return photo
+    } catch (error) {
+      console.error('SITCSDK Mock: takePhoto error:', error.message)
+      throw error
     }
-    
-    console.log('SITCSDK Mock: Photo captured:', photo)
-    return photo
   }
   
   /**
@@ -184,23 +228,36 @@ class SITCSDK {
   async sendNotification(message, options = {}) {
     console.log('SITCSDK Mock: sendNotification called:', message, options)
     
-    // Simulate notification delay
-    await this._delay(200 + Math.random() * 500)
-    
-    const notification = {
-      id: Date.now(),
-      message: message,
-      title: options.title || 'SITC Notification',
-      scheduled: options.schedule ? true : false,
-      schedule: options.schedule || null,
-      timestamp: new Date().toISOString(),
-      status: 'sent'
+    try {
+      // Simulate notification delay
+      await this._delay(200 + Math.random() * 500)
+      
+      // Simulate error cases
+      if (Math.random() < 0.03) { // 3% chance of error
+        throw new Error('Mock Notification Error: Permission denied')
+      }
+      
+      const notification = {
+        id: Date.now(),
+        message: message,
+        title: options.title || 'SITC Notification',
+        scheduled: options.schedule ? true : false,
+        schedule: options.schedule || null,
+        priority: options.priority || 'normal',
+        sound: options.sound || 'default',
+        vibrate: options.vibrate || true,
+        timestamp: new Date().toISOString(),
+        status: 'sent'
+      }
+      
+      // Show mock notification in console
+      console.log('🔔 Mock Notification:', notification.title, '-', notification.message)
+      
+      return notification
+    } catch (error) {
+      console.error('SITCSDK Mock: sendNotification error:', error.message)
+      throw error
     }
-    
-    // Show mock notification in console
-    console.log('🔔 Mock Notification:', notification.title, '-', notification.message)
-    
-    return notification
   }
   
   /**
@@ -246,17 +303,27 @@ class SITCSDK {
   async getUserInfo() {
     console.log('SITCSDK Mock: getUserInfo called')
     
-    // Simulate API delay
-    await this._delay(300 + Math.random() * 700)
-    
-    const userInfo = {
-      user: { ...this.mockUser },
-      permissions: [...this.mockUser.permissions],
-      timestamp: new Date().toISOString()
+    try {
+      // Simulate API delay
+      await this._delay(300 + Math.random() * 700)
+      
+      // Simulate error cases
+      if (Math.random() < 0.02) { // 2% chance of error
+        throw new Error('Mock User Error: Authentication failed')
+      }
+      
+      const userInfo = {
+        user: { ...this.mockUser },
+        permissions: [...this.mockUser.permissions],
+        timestamp: new Date().toISOString()
+      }
+      
+      console.log('SITCSDK Mock: User info retrieved:', userInfo)
+      return userInfo
+    } catch (error) {
+      console.error('SITCSDK Mock: getUserInfo error:', error.message)
+      throw error
     }
-    
-    console.log('SITCSDK Mock: User info retrieved:', userInfo)
-    return userInfo
   }
   
   /**
@@ -336,7 +403,7 @@ class SITCSDK {
   
   /**
    * Debug - Get SDK info
-   * @returns {Object} SDK information!!!
+   * @returns {Object} SDK information
    */
   getInfo() {
     return {
@@ -346,6 +413,92 @@ class SITCSDK {
       user: this.mockUser,
       config: this.config,
       timestamp: new Date().toISOString()
+    }
+  }
+  
+  /**
+   * GPS Service - Reset tracking (Mock)
+   * @returns {Promise<Object>} Reset confirmation
+   */
+  async resetTracking() {
+    console.log('SITCSDK Mock: resetTracking called')
+    
+    try {
+      if (this._trackingInterval) {
+        clearInterval(this._trackingInterval)
+        this._trackingInterval = null
+      }
+      
+      return {
+        status: 'reset',
+        timestamp: new Date().toISOString()
+      }
+    } catch (error) {
+      console.error('SITCSDK Mock: resetTracking error:', error.message)
+      throw error
+    }
+  }
+  
+  /**
+   * Camera Service - Get available sources (Mock)
+   * @returns {Promise<Array>} Available camera sources
+   */
+  async getCameraSources() {
+    console.log('SITCSDK Mock: getCameraSources called')
+    
+    try {
+      await this._delay(100)
+      
+      return [
+        { id: 'camera', name: 'Camera', type: 'camera' },
+        { id: 'gallery', name: 'Gallery', type: 'gallery' },
+        { id: 'prompt', name: 'Choose', type: 'prompt' }
+      ]
+    } catch (error) {
+      console.error('SITCSDK Mock: getCameraSources error:', error.message)
+      throw error
+    }
+  }
+  
+  /**
+   * Notification Service - Check permissions (Mock)
+   * @returns {Promise<Object>} Permission status
+   */
+  async checkNotificationPermissions() {
+    console.log('SITCSDK Mock: checkNotificationPermissions called')
+    
+    try {
+      await this._delay(200)
+      
+      return {
+        granted: true,
+        canRequest: true,
+        status: 'granted'
+      }
+    } catch (error) {
+      console.error('SITCSDK Mock: checkNotificationPermissions error:', error.message)
+      throw error
+    }
+  }
+  
+  /**
+   * Notification Service - Request permissions (Mock)
+   * @returns {Promise<Object>} Permission result
+   */
+  async requestNotificationPermissions() {
+    console.log('SITCSDK Mock: requestNotificationPermissions called')
+    
+    try {
+      await this._delay(500)
+      
+      return {
+        granted: true,
+        status: 'granted',
+        timestamp: new Date().toISOString()
+      }
+    } catch (error) {
+      console.error('SITCSDK Mock: requestNotificationPermissions error:', error.message)
+      throw error
     }
   }
 }
