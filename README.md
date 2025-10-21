@@ -1,4 +1,4 @@
-# 🚀 Hướng Dẫn Tích Hợp Project Riêng Vào Shell App
+# 🚀 Hướng Dẫn Tích Hợp Project Riêng Vào Shell App (miniapp.html - code sample)
 
 ## 📋 Tổng Quan
 
@@ -32,7 +32,7 @@ Shell App cung cấp **SITCSDK** để các project riêng biệt có thể sử
 <html>
 <head>
     <!-- Thêm SITCSDK vào <head> -->
-    <script src="https://cdn.jsdelivr.net/gh/nguyenhiepskt1/sitc-sdk-cdn@f95d07a/sitc-sdk-mock.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/nguyenhiepskt1/sitc-sdk-cdn@e8fd2a2/sitc-sdk-mock.js"></script>
 </head>
 <body>
     <!-- Your project content -->
@@ -265,7 +265,7 @@ export default {
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cdn.jsdelivr.net/gh/nguyenhiepskt1/sitc-sdk-cdn@f95d07a/sitc-sdk-mock.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/nguyenhiepskt1/sitc-sdk-cdn@e8fd2a2/sitc-sdk-mock.js"></script>
 </head>
 <body>
     <h1>My Vanilla JS Project</h1>
