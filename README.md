@@ -16,7 +16,7 @@ Shell App cung cấp **SITCSDK** để các project riêng biệt có thể sử
 
 ## 🛠️ Các Bước Tích Hợp
 
-### **Bước 1: Deploy Project Lên Server**
+### **Bước 1: Deploy Project Lên Server (Mock test có thể bỏ qua)**
 
 ```bash
 # Deploy project của bạn lên bất kỳ hosting nào
