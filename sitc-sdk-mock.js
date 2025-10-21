@@ -342,7 +342,7 @@ class SITCSDK {
   getInfo() {
     return {
       version: this.version,
-      isReady: this.isReady(),
+      isReady: this._isReady,
       isMock: true,
       user: this.mockUser,
       config: this.config,
