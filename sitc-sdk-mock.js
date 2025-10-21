@@ -337,7 +337,7 @@ class SITCSDK {
   
   /**
    * Debug - Get SDK info
-   * @returns {Object} SDK information!
+   * @returns {Object} SDK information!!!
    */
   getInfo() {
     return {
